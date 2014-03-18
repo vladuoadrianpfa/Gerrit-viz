@@ -3,7 +3,7 @@
  * Main application view.
  */
 App.AppView = Backbone.View.extend({
-    
+
     initialize: function (options) {
         App.debug('App.AppView.initialize()');
         this.options = options || {};
@@ -14,14 +14,16 @@ App.AppView = Backbone.View.extend({
         // Create sub-views
         this.render();
     },
-    
+
     render: function () {
         App.debug('App.AppView.render()')
         this.loginView = new App.LoginView({ model: this.userModel });
         this.controlsView = new App.ControlsView({ userModel: this.userModel });
         this.$el.html('');
+        App.debug(this.$el);
         this.$el.append(this.controlsView.el);
         if (this.options.userModel.get('authenticated')) {
+
             this.$el.append('Hello, ' + this.userModel.get('username'))
         } else {
             this.$el.append(this.loginView.el);
@@ -34,9 +36,9 @@ App.AppView = Backbone.View.extend({
  * Login form.
  */
 App.LoginView = Backbone.View.extend({
-    
+
     template: _.template($('#tpl-login-view').html()),
-    
+
     initialize: function (options) {
         App.debug('App.LoginView.initialize()');
         this.options = options || {};
@@ -46,11 +48,11 @@ App.LoginView = Backbone.View.extend({
         this.model.on('unauthorized', this.error)
         this.render();
     },
-    
+
     events: {
         'click button': 'login'
     },
-    
+
     render: function () {
         App.debug('App.LoginView.render()');
         this.$el.html(this.template());
@@ -60,7 +62,7 @@ App.LoginView = Backbone.View.extend({
         });
         return this;
     },
-    
+
     login: function (event) {
         App.debug('App.LoginView.login()');
         event.preventDefault();
@@ -70,7 +72,7 @@ App.LoginView = Backbone.View.extend({
         $('input[name=password]', this.$el).val('');
         this.model.signIn(username, password);
     },
-    
+
     error: function (message) {
         $('.message', this.$el).html(message);
         $('input[name=username]', this.$el).focus();
@@ -81,9 +83,9 @@ App.LoginView = Backbone.View.extend({
  * Controls drop-down menu
  */
 App.ControlsView = Backbone.View.extend({
-    
+
     template: _.template($('#tpl-controls-view').html()),
-    
+
     initialize: function (options) {
         App.debug('App.ControlsView.initialize()');
         this.options = options || {};
@@ -92,7 +94,7 @@ App.ControlsView = Backbone.View.extend({
         this.controlsSignOutView = new App.ControlsSignOutView({ userModel: this.userModel });
         this.render();
     },
-    
+
     render: function () {
         App.debug('App.ControlsView.render()');
         this.$el.addClass('controls');
